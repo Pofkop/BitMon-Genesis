@@ -1,6 +1,3 @@
-
-// main.js adjusted for 1024x1536 canvas support and title screen positioning
-
 import { Player } from './modules/player.js';
 import { BitMon } from './modules/bitmon.js';
 import { saveGame, loadGame } from './modules/saveSystem.js';
@@ -45,17 +42,7 @@ titleImage.onload = () => drawMainMenu();
 function drawMainMenu() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   ctx.drawImage(titleImage, 0, 0, canvas.width, canvas.height);
-
-  const options = ['Start', 'Load', 'Donate'];
-  ctx.font = '32px monospace';
-  options.forEach((opt, i) => {
-    ctx.fillStyle = i === selectedMenu ? '#FFD700' : '#fff';
-    ctx.fillText(opt, canvas.width / 2 - 40, 1100 + i * 50);
-    if (i === selectedMenu) {
-      ctx.fillStyle = '#FFD700';
-      ctx.fillText('▶', canvas.width / 2 - 80, 1100 + i * 50);
-    }
-  });
+  // All menu text and arrows removed
 }
 
 function drawStarterSelection() {
