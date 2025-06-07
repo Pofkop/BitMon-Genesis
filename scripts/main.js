@@ -1,50 +1,67 @@
-window.onload = () => {
-  const canvas = document.getElementById("gameCanvas");
-  const ctx = canvas.getContext("2d");
-  let gameState = "menu";
+import { Player } from './modules/player.js';
+import { BitMon } from './modules/bitmon.js';
+import { saveGame, loadGame } from './modules/saveSystem.js';
+import { startBattle, battleTurn } from './modules/battleSystem.js';
+import { QuestManager } from './modules/questSystem.js';
 
-  const player = {
-    x: 7,
-    y: 5,
-    sprite: "🧍"
-  };
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
 
-  function draw() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    if (gameState === "explore") {
-      ctx.fillStyle = "#111";
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      ctx.fillStyle = "#0f0";
-      ctx.font = "16px monospace";
-      ctx.fillText("Exploring: Starter Town", 10, 20);
-      ctx.fillText("Use arrow keys to move", 10, 40);
-      ctx.fillText(player.sprite, player.x * 30, player.y * 30);
-    }
-  }
+let gameState = 'menu';
+let player = new Player();
+let questManager = new QuestManager();
 
-  function update() {
-    draw();
-    requestAnimationFrame(update);
-  }
-
-  document.addEventListener("keydown", (e) => {
-    if (gameState === "explore") {
-      if (e.key === "ArrowUp") player.y = Math.max(0, player.y - 1);
-      if (e.key === "ArrowDown") player.y = Math.min(13, player.y + 1);
-      if (e.key === "ArrowLeft") player.x = Math.max(0, player.x - 1);
-      if (e.key === "ArrowRight") player.x = Math.min(15, player.x + 1);
-    }
-  });
-
-  document.getElementById("startBtn").onclick = () => {
-    document.getElementById("menuOverlay").style.display = "none";
-    gameState = "explore";
-  };
-
-  document.getElementById("donateBtn").onclick = () => {
-    navigator.clipboard.writeText("0xD0a271eAC0192531bb073F962C0Fb76d3054e082");
-    alert("Wallet address copied!");
-  };
-
-  update();
+document.getElementById('startBtn').onclick = () => {
+  gameState = 'exploring';
+  startGame();
 };
+
+document.getElementById('loadBtn').onclick = () => {
+  const loaded = loadGame();
+  if (loaded) {
+    Object.assign(player, loaded);
+    gameState = 'exploring';
+    startGame();
+  }
+};
+
+document.getElementById('donateBtn').onclick = () => {
+  const address = '0xD0a271eAC0192531bb073F962C0Fb76d3054e082';
+  navigator.clipboard.writeText(address);
+  alert('Wallet address copied to clipboard!');
+};
+
+function startGame() {
+  console.log("Game started.");
+  draw();
+  setupKeys();
+  autosaveLoop();
+}
+
+function setupKeys() {
+  document.addEventListener('keydown', (e) => {
+    if (gameState !== 'exploring') return;
+    switch (e.key) {
+      case 'ArrowUp': player.position.y--; break;
+      case 'ArrowDown': player.position.y++; break;
+      case 'ArrowLeft': player.position.x--; break;
+      case 'ArrowRight': player.position.x++; break;
+    }
+    draw();
+  });
+}
+
+function draw() {
+  ctx.fillStyle = '#111';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = '#0f0';
+  ctx.font = '16px monospace';
+  ctx.fillText('Exploring: Starter Town', 20, 30);
+  ctx.fillText('Use arrow keys to move.', 20, 60);
+}
+
+function autosaveLoop() {
+  setInterval(() => {
+    saveGame(player);
+  }, 300000); // Every 5 minutes
+}
