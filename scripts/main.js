@@ -1,3 +1,4 @@
+
 // main.js adjusted for 1024x1536 canvas support and title screen positioning
 
 import { Player } from './modules/player.js';
@@ -47,10 +48,13 @@ function drawMainMenu() {
 
   const options = ['Start', 'Load', 'Donate'];
   ctx.font = '32px monospace';
-  ctx.fillStyle = '#0f0';
   options.forEach((opt, i) => {
     ctx.fillStyle = i === selectedMenu ? '#FFD700' : '#fff';
     ctx.fillText(opt, canvas.width / 2 - 40, 1100 + i * 50);
+    if (i === selectedMenu) {
+      ctx.fillStyle = '#FFD700';
+      ctx.fillText('▶', canvas.width / 2 - 80, 1100 + i * 50);
+    }
   });
 }
 
