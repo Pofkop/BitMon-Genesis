@@ -11,3 +11,15 @@ canvas {
   margin: auto;
   image-rendering: pixelated;
 }
+
+/* Defensive CSS: Hide any leftover HTML UI elements */
+button,
+#menu,
+.menu,
+.menu-button {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  position: absolute !important;
+  left: -9999px !important;
+}
