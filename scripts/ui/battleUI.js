@@ -1,3 +1,4 @@
+
 export function renderBattleScreen(ctx, playerMon, enemyMon) {
   ctx.clearRect(0, 0, 480, 432);
 
@@ -9,6 +10,7 @@ export function renderBattleScreen(ctx, playerMon, enemyMon) {
   ctx.fillStyle = '#ff5555';
   ctx.fillRect(300, 80, 100, 100);
   ctx.fillStyle = '#fff';
+  ctx.font = '16px monospace';
   ctx.fillText(enemyMon.name + ' HP: ' + enemyMon.hp, 280, 60);
 
   // Player
