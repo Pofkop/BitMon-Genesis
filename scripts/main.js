@@ -1,4 +1,3 @@
-
 // main.js adjusted for 1024x1536 canvas support and title screen positioning
 
 import { Player } from './modules/player.js';
