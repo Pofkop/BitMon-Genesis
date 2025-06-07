@@ -1,4 +1,6 @@
 
+// main.js adjusted for 1024x1536 canvas support and title screen positioning
+
 import { Player } from './modules/player.js';
 import { BitMon } from './modules/bitmon.js';
 import { saveGame, loadGame } from './modules/saveSystem.js';
@@ -14,6 +16,9 @@ import { EncounterManager } from './modules/EncounterManager.js';
 
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
+
+canvas.width = 1024;
+canvas.height = 1536;
 
 let gameState = 'menu';
 let player = new Player();
@@ -39,14 +44,14 @@ titleImage.onload = () => drawMainMenu();
 
 function drawMainMenu() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  ctx.drawImage(titleImage, 0, 0);
+  ctx.drawImage(titleImage, 0, 0, canvas.width, canvas.height);
 
   const options = ['Start', 'Load', 'Donate'];
-  ctx.font = '16px monospace';
+  ctx.font = '32px monospace';
   ctx.fillStyle = '#0f0';
   options.forEach((opt, i) => {
     ctx.fillStyle = i === selectedMenu ? '#FFD700' : '#fff';
-    ctx.fillText(opt, 200, 300 + i * 30);
+    ctx.fillText(opt, canvas.width / 2 - 40, 1100 + i * 50);
   });
 }
 
@@ -132,9 +137,9 @@ function draw() {
   dialogue.render();
   regionManager.drawRegionLabel();
   ctx.fillStyle = '#0f0';
-  ctx.font = '16px monospace';
-  ctx.fillText('Use arrow keys to move. Press X near NPCs.', 20, 20);
-  ctx.fillText('Press R to go to Genesis Grove.', 20, 40);
+  ctx.font = '24px monospace';
+  ctx.fillText('Use arrow keys to move. Press X near NPCs.', 40, 60);
+  ctx.fillText('Press R to go to Genesis Grove.', 40, 100);
 }
 
 function autosaveLoop() {
