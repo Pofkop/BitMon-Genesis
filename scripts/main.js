@@ -6,6 +6,8 @@ import { renderStarterSelection } from './ui/starterUI.js';
 import { renderBattleScreen } from './ui/battleUI.js';
 import { MapRenderer } from './ui/MapRenderer.js';
 import { DialogueManager } from './ui/Dialogue.js';
+import { RegionManager } from './modules/RegionManager.js';
+import { REGION_MAPS } from './modules/bitmon_region_map.js';
 import { startBattle, battleTurn } from './modules/battleSystem.js';
 
 const canvas = document.getElementById('gameCanvas');
@@ -23,18 +25,8 @@ let starterOptions = [
 ];
 let selectedStarter = 0;
 
-// Basic demo map and NPC
-let mapData = [
-  [1, 1, 1, 1, 1, 1, 1, 1],
-  [1, 0, 0, 0, 0, 0, 0, 1],
-  [1, 0, 1, 1, 0, 1, 0, 1],
-  [1, 0, 0, 0, 0, 1, 0, 1],
-  [1, 1, 1, 1, 1, 1, 1, 1]
-];
-let tileSize = 60;
-
-let npcs = [{ x: 3, y: 2, name: 'Trainer Bob', text: 'Trainer Bob is trying to rug you, defend yourself!' }];
-let mapRenderer = new MapRenderer(ctx, tileSize, mapData, npcs);
+const regionManager = new RegionManager(ctx, REGION_MAPS);
+let mapRenderer = new MapRenderer(ctx, 60, regionManager.getCurrentMap(), regionManager.getNPCs());
 let dialogue = new DialogueManager(ctx);
 
 document.getElementById('startBtn').onclick = () => {
@@ -84,9 +76,12 @@ function setupKeys() {
         case 'ArrowDown': player.position.y++; break;
         case 'ArrowLeft': player.position.x--; break;
         case 'ArrowRight': player.position.x++; break;
-        case 'b': beginDemoBattle(); break;
+        case 'r': regionManager.transitionTo('genesis-grove'); break;
         case 'x': checkNPCInteraction(); break;
+        case 'b': beginDemoBattle(); break;
       }
+      mapRenderer.map = regionManager.getCurrentMap();
+      mapRenderer.npcs = regionManager.getNPCs();
       draw();
     } else if (gameState === 'battle') {
       if (e.key.toLowerCase() === 'a') {
@@ -101,9 +96,11 @@ function setupKeys() {
 function draw() {
   mapRenderer.render();
   dialogue.render();
+  regionManager.drawRegionLabel();
   ctx.fillStyle = '#0f0';
   ctx.font = '16px monospace';
   ctx.fillText('Use arrow keys to move. Press X near NPCs.', 20, 20);
+  ctx.fillText('Press R to go to Genesis Grove.', 20, 40);
 }
 
 function autosaveLoop() {
@@ -126,7 +123,7 @@ function drawBattle() {
 }
 
 function checkNPCInteraction() {
-  const npc = npcs.find(n => n.x === player.position.x && n.y === player.position.y);
+  const npc = regionManager.getNPCs().find(n => n.x === player.position.x && n.y === player.position.y);
   if (npc) {
     dialogue.show(npc.text);
     setTimeout(() => {
