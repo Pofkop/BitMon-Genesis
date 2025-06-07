@@ -3,6 +3,7 @@ import { BitMon } from './modules/bitmon.js';
 import { saveGame, loadGame } from './modules/saveSystem.js';
 import { startBattle, battleTurn } from './modules/battleSystem.js';
 import { QuestManager } from './modules/questSystem.js';
+import { renderBattleScreen } from './ui/battleUI.js';
 
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
@@ -10,6 +11,7 @@ const ctx = canvas.getContext('2d');
 let gameState = 'menu';
 let player = new Player();
 let questManager = new QuestManager();
+let battleState = null;
 
 document.getElementById('startBtn').onclick = () => {
   gameState = 'exploring';
@@ -36,18 +38,32 @@ function startGame() {
   draw();
   setupKeys();
   autosaveLoop();
+
+  // Add a starter for demo if empty
+  if (player.party.length === 0) {
+    const starter = new BitMon('Pofkop', 'Normal', 5);
+    player.addBitMon(starter);
+  }
 }
 
 function setupKeys() {
   document.addEventListener('keydown', (e) => {
-    if (gameState !== 'exploring') return;
-    switch (e.key) {
-      case 'ArrowUp': player.position.y--; break;
-      case 'ArrowDown': player.position.y++; break;
-      case 'ArrowLeft': player.position.x--; break;
-      case 'ArrowRight': player.position.x++; break;
+    if (gameState === 'exploring') {
+      switch (e.key) {
+        case 'ArrowUp': player.position.y--; break;
+        case 'ArrowDown': player.position.y++; break;
+        case 'ArrowLeft': player.position.x--; break;
+        case 'ArrowRight': player.position.x++; break;
+        case 'b': beginDemoBattle(); break;
+      }
+      draw();
+    } else if (gameState === 'battle') {
+      if (e.key.toLowerCase() === 'a') {
+        const log = battleTurn(battleState);
+        console.log(log);
+        drawBattle();
+      }
     }
-    draw();
   });
 }
 
@@ -58,10 +74,24 @@ function draw() {
   ctx.font = '16px monospace';
   ctx.fillText('Exploring: Starter Town', 20, 30);
   ctx.fillText('Use arrow keys to move.', 20, 60);
+  ctx.fillText('Press B to trigger battle.', 20, 90);
 }
 
 function autosaveLoop() {
   setInterval(() => {
     saveGame(player);
   }, 300000); // Every 5 minutes
+}
+
+function beginDemoBattle() {
+  const enemy = new BitMon('Rugger', 'Dark', 4);
+  battleState = startBattle(player, enemy);
+  gameState = 'battle';
+  drawBattle();
+}
+
+function drawBattle() {
+  const userMon = player.party[0];
+  const enemyMon = battleState.enemy;
+  renderBattleScreen(ctx, userMon, enemyMon);
 }
