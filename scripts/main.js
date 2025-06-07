@@ -44,6 +44,14 @@ titleImage.onload = () => drawMainMenu();
 function drawMainMenu() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   ctx.drawImage(titleImage, 0, 0, canvas.width, canvas.height);
+
+  const options = ['Start', 'Load', 'Donate'];
+  ctx.font = '32px monospace';
+  ctx.fillStyle = '#0f0';
+  options.forEach((opt, i) => {
+    ctx.fillStyle = i === selectedMenu ? '#FFD700' : '#fff';
+    ctx.fillText(opt, canvas.width / 2 - 40, 1100 + i * 50);
+  });
 }
 
 function drawStarterSelection() {
