@@ -1,33 +1,50 @@
-export class RegionManager {
-  constructor(ctx, regions) {
-    this.ctx = ctx;
-    this.regions = regions;
-    this.current = 'starter-town';
-    this.mapData = this.regions[this.current].map;
-    this.npcs = this.regions[this.current].npcs;
-  }
+// modules/RegionManager.js
 
-  transitionTo(regionName) {
-    if (this.regions[regionName]) {
-      this.current = regionName;
-      this.mapData = this.regions[regionName].map;
-      this.npcs = this.regions[regionName].npcs;
-    }
+export class RegionManager {
+  constructor(ctx, regionMaps, startingRegion = 'starter-town') {
+    this.ctx = ctx;
+    this.regionMaps = regionMaps;
+    this.currentRegion = startingRegion;
+    this.labelTimer = 60;
+    this.npcData = {
+      'starter-room': [
+        { x: 4, y: 2, type: 'npc', text: 'Choose your BitMon wisely!' },
+        { x: 3, y: 4, type: 'bitmon', name: 'Pofkop' },
+        { x: 4, y: 4, type: 'bitmon', name: 'Vader' },
+        { x: 5, y: 4, type: 'bitmon', name: 'DegenApe' }
+      ],
+      'starter-town': [
+        { x: 2, y: 3, type: 'npc', text: 'Welcome to Starter Town!' }
+      ],
+      'genesis-grove': [
+        { x: 5, y: 5, type: 'npc', text: 'Beware of wild BitMons!' }
+      ]
+    };
   }
 
   getCurrentMap() {
-    return this.mapData;
+    return this.regionMaps[this.currentRegion];
   }
 
   getNPCs() {
-    return this.npcs;
+    return this.npcData[this.currentRegion] || [];
+  }
+
+  transitionTo(regionName) {
+    if (this.regionMaps[regionName]) {
+      this.currentRegion = regionName;
+      this.labelTimer = 60;
+    }
   }
 
   drawRegionLabel() {
-    this.ctx.fillStyle = '#000';
-    this.ctx.fillRect(0, 0, 200, 20);
-    this.ctx.fillStyle = '#fff';
-    this.ctx.font = '12px monospace';
-    this.ctx.fillText('Exploring: ' + this.current, 10, 15);
+    if (this.labelTimer > 0) {
+      this.ctx.fillStyle = '#222';
+      this.ctx.fillRect(0, 0, 480, 20);
+      this.ctx.fillStyle = '#0f0';
+      this.ctx.font = '14px monospace';
+      this.ctx.fillText('Exploring: ' + this.getCurrentMap().name, 10, 15);
+      this.labelTimer--;
+    }
   }
 }
