@@ -96,14 +96,17 @@ function setupKeys() {
             gameState = 'exploring';
             startGame();
             setupKeys();
+          } else {
+            drawMainMenu();
           }
         } else if (selectedMenu === 2) {
           const address = '0xD0a271eAC0192531bb073F962C0Fb76d3054e082';
           navigator.clipboard.writeText(address);
           alert('Wallet address copied to clipboard!');
+          drawMainMenu();
         }
+        // Removed drawMainMenu() from here
       }
-      drawMainMenu();
     } else if (gameState === 'intro') {
       if (e.key === 'Enter') {
         gameState = 'starter-select';
