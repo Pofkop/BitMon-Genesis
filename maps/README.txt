@@ -1,0 +1,1 @@
+Include JSON/TXT files that define maps and walkable tiles.

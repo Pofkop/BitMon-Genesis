@@ -1,0 +1,7 @@
+{
+  "starters": [
+    { "name": "Pofkop", "type": "Grass", "sprite": "pofkop.png" },
+    { "name": "Vader", "type": "Dark", "sprite": "vader.png" },
+    { "name": "DegenApe", "type": "Fighting", "sprite": "degenape.png" }
+  ]
+}
