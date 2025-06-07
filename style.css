@@ -18,11 +18,3 @@ canvas {
   background-color: #000;
   border: 2px solid #0f0;
 }
-
-#menuOverlay {
-  position: absolute;
-  top: 20px;
-  left: 20px;
-  z-index: 10;
-  display: none; /* hide HTML buttons if you're using pixel menu now */
-}
