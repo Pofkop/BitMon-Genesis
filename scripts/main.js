@@ -54,7 +54,30 @@ function drawMainMenu() {
   ctx.fillText('▶', arrowX, buttonY[selectedMenu]);
 }
 
-const introLines = ['In the genesis block of a forgotten chain, a new world took form...', '', 'BitMons — digital creatures forged from code and chaos — lived in balance across the layered networks.', '', 'But something has changed.', '', 'A spreading corruption now fractures the blocks.', 'Some BitMons have gone rogue, others are lost in the void.', 'The system’s logic is breaking — regions loop, memory leaks, data collapses.', '', 'From deep within the chain’s core, a name reactivates...', '', 'Satoshi.', '', 'You are the last trusted node.', 'The last untampered address.', 'The one untouched by the corruption.', '', 'To restore balance, you must uncover what broke the chain...', 'and why it let you remain.', '', 'Press ENTER to continue.'];
+const introLines = [
+  'In the genesis block of a forgotten chain, a new world took form...',
+  '',
+  'BitMons — digital creatures forged from code and chaos — lived in balance across the layered networks.',
+  '',
+  'But something has changed.',
+  '',
+  'A spreading corruption now fractures the blocks.',
+  'Some BitMons have gone rogue, others are lost in the void.',
+  'The system’s logic is breaking — regions loop, memory leaks, data collapses.',
+  '',
+  'From deep within the chain’s core, a name reactivates...',
+  '',
+  'Satoshi.',
+  '',
+  'You are the last trusted node.',
+  'The last untampered address.',
+  'The one untouched by the corruption.',
+  '',
+  'To restore balance, you must uncover what broke the chain...',
+  'and why it let you remain.',
+  '',
+  'Press ENTER to continue.'
+];
 
 function drawIntro() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -88,7 +111,7 @@ function setupKeys() {
       if (e.key === 'Enter') {
         if (selectedMenu === 0) {
           gameState = 'intro';
-          drawIntro();
+          drawIntro(); // DO NOT call drawMainMenu after this
         } else if (selectedMenu === 1) {
           const loaded = loadGame();
           if (loaded) {
@@ -105,7 +128,8 @@ function setupKeys() {
           alert('Wallet address copied to clipboard!');
           drawMainMenu();
         }
-        // Removed drawMainMenu() from here
+      } else {
+        drawMainMenu();
       }
     } else if (gameState === 'intro') {
       if (e.key === 'Enter') {
