@@ -1,3 +1,4 @@
+
 import { Player } from './modules/player.js';
 import { BitMon } from './modules/bitmon.js';
 import { saveGame, loadGame } from './modules/saveSystem.js';
@@ -9,6 +10,7 @@ import { DialogueManager } from './ui/Dialogue.js';
 import { RegionManager } from './modules/RegionManager.js';
 import { REGION_MAPS } from './modules/bitmon_region_map.js';
 import { startBattle, battleTurn } from './modules/battleSystem.js';
+import { EncounterManager } from './modules/EncounterManager.js'; // NEW
 
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
@@ -28,6 +30,7 @@ let selectedStarter = 0;
 const regionManager = new RegionManager(ctx, REGION_MAPS);
 let mapRenderer = new MapRenderer(ctx, 60, regionManager.getCurrentMap(), regionManager.getNPCs());
 let dialogue = new DialogueManager(ctx);
+const encounterManager = new EncounterManager(regionManager); // NEW
 
 document.getElementById('startBtn').onclick = () => {
   gameState = 'starter-select';
@@ -71,15 +74,27 @@ function setupKeys() {
       }
       drawStarterSelection();
     } else if (gameState === 'exploring') {
+      let moved = false;
       switch (e.key) {
-        case 'ArrowUp': player.position.y--; break;
-        case 'ArrowDown': player.position.y++; break;
-        case 'ArrowLeft': player.position.x--; break;
-        case 'ArrowRight': player.position.x++; break;
+        case 'ArrowUp': player.position.y--; moved = true; break;
+        case 'ArrowDown': player.position.y++; moved = true; break;
+        case 'ArrowLeft': player.position.x--; moved = true; break;
+        case 'ArrowRight': player.position.x++; moved = true; break;
         case 'r': regionManager.transitionTo('genesis-grove'); break;
         case 'x': checkNPCInteraction(); break;
         case 'b': beginDemoBattle(); break;
       }
+
+      if (moved) {
+        const encounter = encounterManager.checkForWildEncounter(player.position);
+        if (encounter) {
+          battleState = startBattle(player, encounter);
+          gameState = 'battle';
+          drawBattle();
+          return;
+        }
+      }
+
       mapRenderer.map = regionManager.getCurrentMap();
       mapRenderer.npcs = regionManager.getNPCs();
       draw();
