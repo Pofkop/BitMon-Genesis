@@ -43,8 +43,9 @@ function drawMainMenu() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   ctx.drawImage(titleImage, 0, 0, canvas.width, canvas.height);
 
-  const arrowX = 330;
-  const buttonY = [950, 1050, 1150]; // Y-centers for START, LOAD, DONATE
+  // Arrow indicator in front of selected box
+  const arrowX = 330; // Adjust this if you want the arrow closer/farther from box
+  const buttonY = [650, 730, 810]; // Y center of each button
 
   ctx.font = '32px monospace';
   ctx.fillStyle = '#FFD700';
