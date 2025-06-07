@@ -4,6 +4,8 @@ import { saveGame, loadGame } from './modules/saveSystem.js';
 import { QuestManager } from './modules/questSystem.js';
 import { renderStarterSelection } from './ui/starterUI.js';
 import { renderBattleScreen } from './ui/battleUI.js';
+import { MapRenderer } from './ui/MapRenderer.js';
+import { DialogueManager } from './ui/Dialogue.js';
 import { startBattle, battleTurn } from './modules/battleSystem.js';
 
 const canvas = document.getElementById('gameCanvas');
@@ -20,6 +22,20 @@ let starterOptions = [
   new BitMon('DegenApe', 'Fighting', 5)
 ];
 let selectedStarter = 0;
+
+// Basic demo map and NPC
+let mapData = [
+  [1, 1, 1, 1, 1, 1, 1, 1],
+  [1, 0, 0, 0, 0, 0, 0, 1],
+  [1, 0, 1, 1, 0, 1, 0, 1],
+  [1, 0, 0, 0, 0, 1, 0, 1],
+  [1, 1, 1, 1, 1, 1, 1, 1]
+];
+let tileSize = 60;
+
+let npcs = [{ x: 3, y: 2, name: 'Trainer Bob', text: 'Trainer Bob is trying to rug you, defend yourself!' }];
+let mapRenderer = new MapRenderer(ctx, tileSize, mapData, npcs);
+let dialogue = new DialogueManager(ctx);
 
 document.getElementById('startBtn').onclick = () => {
   gameState = 'starter-select';
@@ -69,6 +85,7 @@ function setupKeys() {
         case 'ArrowLeft': player.position.x--; break;
         case 'ArrowRight': player.position.x++; break;
         case 'b': beginDemoBattle(); break;
+        case 'x': checkNPCInteraction(); break;
       }
       draw();
     } else if (gameState === 'battle') {
@@ -82,13 +99,11 @@ function setupKeys() {
 }
 
 function draw() {
-  ctx.fillStyle = '#111';
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  mapRenderer.render();
+  dialogue.render();
   ctx.fillStyle = '#0f0';
   ctx.font = '16px monospace';
-  ctx.fillText('Exploring: Starter Town', 20, 30);
-  ctx.fillText('Use arrow keys to move.', 20, 60);
-  ctx.fillText('Press B to trigger battle.', 20, 90);
+  ctx.fillText('Use arrow keys to move. Press X near NPCs.', 20, 20);
 }
 
 function autosaveLoop() {
@@ -108,4 +123,15 @@ function drawBattle() {
   const userMon = player.party[0];
   const enemyMon = battleState.enemy;
   renderBattleScreen(ctx, userMon, enemyMon);
+}
+
+function checkNPCInteraction() {
+  const npc = npcs.find(n => n.x === player.position.x && n.y === player.position.y);
+  if (npc) {
+    dialogue.show(npc.text);
+    setTimeout(() => {
+      dialogue.hide();
+      draw();
+    }, 3000);
+  }
 }
