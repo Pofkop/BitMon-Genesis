@@ -42,7 +42,17 @@ titleImage.onload = () => drawMainMenu();
 function drawMainMenu() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   ctx.drawImage(titleImage, 0, 0, canvas.width, canvas.height);
-  // All menu text and arrows removed
+
+  // Arrow indicator in front of selected box
+  const arrowX = 330; // Adjust this if you want the arrow closer/farther from box
+  const buttonY = [650, 730, 810]; // Y center of each button
+
+  ctx.font = '32px monospace';
+  ctx.fillStyle = '#FFD700';
+  ctx.textAlign = 'left';
+  ctx.textBaseline = 'middle';
+
+  ctx.fillText('▶', arrowX, buttonY[selectedMenu]);
 }
 
 function drawStarterSelection() {
