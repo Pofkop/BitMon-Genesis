@@ -30,7 +30,7 @@ let starterOptions = [
 ];
 let selectedStarter = 0;
 
-const regionManager = new RegionManager(ctx, REGION_MAPS);
+const regionManager = new RegionManager(ctx, REGION_MAPS, 'starter-room');
 let mapRenderer = new MapRenderer(ctx, 60, regionManager.getCurrentMap(), regionManager.getNPCs());
 let dialogue = new DialogueManager(ctx);
 const encounterManager = new EncounterManager(regionManager);
