@@ -1,0 +1,17 @@
+body {
+  margin: 0;
+  background: #000;
+  color: #fff;
+  font-family: monospace;
+}
+canvas {
+  display: block;
+  margin: auto;
+  image-rendering: pixelated;
+}
+#menuOverlay {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 10;
+}
