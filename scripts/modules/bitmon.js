@@ -1,19 +1,39 @@
-export const BitMon = class {
+export class BitMon {
   constructor(name, type, level = 1) {
     this.name = name;
     this.type = type;
     this.level = level;
-    this.hp = 10 + level * 2;
-    this.moves = [];
+    this.maxHP = 20 + level * 5;
+    this.currentHP = this.maxHP;
+    this.moves = this.assignMoves();
   }
 
-  addMove(move) {
-    this.moves.push(move);
+  assignMoves() {
+    const basicMoves = {
+      'Tackle': { power: 5 },
+      'Byte': { power: 6 },
+      'Ping': { power: 4 },
+      'Firewall': { power: 3 }
+    };
+
+    const assigned = [];
+
+    const available = Object.keys(basicMoves);
+    for (let i = 0; i < Math.min(2 + Math.floor(this.level / 5), available.length); i++) {
+      assigned.push({
+        name: available[i],
+        ...basicMoves[available[i]]
+      });
+    }
+
+    return assigned;
   }
 
-  attack(target) {
-    const dmg = Math.floor(Math.random() * 5 + 3);
-    target.hp -= dmg;
-    return dmg;
+  isFainted() {
+    return this.currentHP <= 0;
   }
-};
+
+  takeDamage(amount) {
+    this.currentHP = Math.max(0, this.currentHP - amount);
+  }
+}
