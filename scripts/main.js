@@ -43,16 +43,32 @@ function drawMainMenu() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   ctx.drawImage(titleImage, 0, 0, canvas.width, canvas.height);
 
-  // Arrow indicator in front of selected box
-  const arrowX = 330; // Adjust this if you want the arrow closer/farther from box
-  const buttonY = [650, 730, 810]; // Y center of each button
+  const arrowX = 290;
+  const buttonY = [965, 1065, 1165];
 
-  ctx.font = '32px monospace';
+  ctx.font = '48px monospace';
   ctx.fillStyle = '#FFD700';
   ctx.textAlign = 'left';
   ctx.textBaseline = 'middle';
 
   ctx.fillText('▶', arrowX, buttonY[selectedMenu]);
+}
+
+const introLines = ['In the genesis block of a forgotten chain, a new world took form...', '', 'BitMons — digital creatures forged from code and chaos — lived in balance across the layered networks.', '', 'But something has changed.', '', 'A spreading corruption now fractures the blocks.', 'Some BitMons have gone rogue, others are lost in the void.', 'The system’s logic is breaking — regions loop, memory leaks, data collapses.', '', 'From deep within the chain’s core, a name reactivates...', '', 'Satoshi.', '', 'You are the last trusted node.', 'The last untampered address.', 'The one untouched by the corruption.', '', 'To restore balance, you must uncover what broke the chain...', 'and why it let you remain.', '', 'Press ENTER to continue.'];
+
+function drawIntro() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = '#000';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  ctx.fillStyle = '#00FFCC';
+  ctx.font = '24px monospace';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'top';
+
+  introLines.forEach((line, i) => {
+    ctx.fillText(line, canvas.width / 2, 80 + i * 32);
+  });
 }
 
 function drawStarterSelection() {
@@ -71,8 +87,8 @@ function setupKeys() {
       if (e.key === 'ArrowUp') selectedMenu = (selectedMenu + 2) % 3;
       if (e.key === 'Enter') {
         if (selectedMenu === 0) {
-          gameState = 'starter-select';
-          drawStarterSelection();
+          gameState = 'intro';
+          drawIntro();
         } else if (selectedMenu === 1) {
           const loaded = loadGame();
           if (loaded) {
@@ -88,6 +104,11 @@ function setupKeys() {
         }
       }
       drawMainMenu();
+    } else if (gameState === 'intro') {
+      if (e.key === 'Enter') {
+        gameState = 'starter-select';
+        drawStarterSelection();
+      }
     } else if (gameState === 'starter-select') {
       if (e.key === 'ArrowLeft') selectedStarter = (selectedStarter + 2) % 3;
       if (e.key === 'ArrowRight') selectedStarter = (selectedStarter + 1) % 3;
