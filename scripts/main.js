@@ -1,9 +1,10 @@
 import { Player } from './modules/player.js';
 import { BitMon } from './modules/bitmon.js';
 import { saveGame, loadGame } from './modules/saveSystem.js';
-import { startBattle, battleTurn } from './modules/battleSystem.js';
 import { QuestManager } from './modules/questSystem.js';
+import { renderStarterSelection } from './ui/starterUI.js';
 import { renderBattleScreen } from './ui/battleUI.js';
+import { startBattle, battleTurn } from './modules/battleSystem.js';
 
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
@@ -13,9 +14,16 @@ let player = new Player();
 let questManager = new QuestManager();
 let battleState = null;
 
+let starterOptions = [
+  new BitMon('Pofkop', 'Normal', 5),
+  new BitMon('Vader', 'Dark', 5),
+  new BitMon('DegenApe', 'Fighting', 5)
+];
+let selectedStarter = 0;
+
 document.getElementById('startBtn').onclick = () => {
-  gameState = 'exploring';
-  startGame();
+  gameState = 'starter-select';
+  drawStarterSelection();
 };
 
 document.getElementById('loadBtn').onclick = () => {
@@ -33,22 +41,28 @@ document.getElementById('donateBtn').onclick = () => {
   alert('Wallet address copied to clipboard!');
 };
 
+function drawStarterSelection() {
+  renderStarterSelection(ctx, starterOptions, selectedStarter);
+}
+
 function startGame() {
-  console.log("Game started.");
   draw();
   setupKeys();
   autosaveLoop();
-
-  // Add a starter for demo if empty
-  if (player.party.length === 0) {
-    const starter = new BitMon('Pofkop', 'Normal', 5);
-    player.addBitMon(starter);
-  }
 }
 
 function setupKeys() {
   document.addEventListener('keydown', (e) => {
-    if (gameState === 'exploring') {
+    if (gameState === 'starter-select') {
+      if (e.key === 'ArrowLeft') selectedStarter = (selectedStarter + 2) % 3;
+      if (e.key === 'ArrowRight') selectedStarter = (selectedStarter + 1) % 3;
+      if (e.key === 'Enter') {
+        player.addBitMon(starterOptions[selectedStarter]);
+        gameState = 'exploring';
+        startGame();
+      }
+      drawStarterSelection();
+    } else if (gameState === 'exploring') {
       switch (e.key) {
         case 'ArrowUp': player.position.y--; break;
         case 'ArrowDown': player.position.y++; break;
@@ -80,7 +94,7 @@ function draw() {
 function autosaveLoop() {
   setInterval(() => {
     saveGame(player);
-  }, 300000); // Every 5 minutes
+  }, 300000);
 }
 
 function beginDemoBattle() {
