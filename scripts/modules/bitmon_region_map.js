@@ -20,5 +20,13 @@ export const REGION_MAPS = {
       const isGrass = grassTiles.some(tile => tile.x === x && tile.y === y);
       return isGrass ? { encounterRate: 0.25, region: 'genesis-grove' } : {};
     }
+  },
+  'starter-room': {
+    name: 'Starter Room',
+    width: 10,
+    height: 10,
+    getTile(x, y) {
+      return {}; // No wild encounters in indoor areas
+    }
   }
 };
