@@ -1,3 +1,4 @@
+
 export class BitMon {
   constructor(name, type, level) {
     this.name = name;
