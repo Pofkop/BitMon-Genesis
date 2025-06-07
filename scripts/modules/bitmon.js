@@ -25,7 +25,7 @@ export class BitMon {
       Evansweb3dev: ['Anon Hack', 'Code Flood'],
       Bigwil2k3: ['Bench Press', 'Crypto Flex'],
       NickPlaysCrypto: ['VR Beam', 'Immersion'],
-      100xDarren: ['Cap Swipe', 'Alpha Dash'],
+      HundredxDarren: ['Cap Swipe', 'Alpha Dash'],
       EtherMage: ['Arcane Byte', 'Dust Chain'],
       Miratisu: ['Sweet Shot', 'Thread Flurry'],
       Everythingempty: ['Dragon Code', 'Pixel Burst'],
